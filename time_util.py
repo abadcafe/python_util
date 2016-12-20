@@ -97,7 +97,12 @@ def get_today_str():
 
 
 def get_yesterday_str():
-        return (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+    return (datetime.date.today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+
+
+def get_yesterday_str_by_date_str(date_str):
+    stamp = date_str_2_stamp(date_str) - 24 * 3600
+    return stamp_2_date_str(stamp)
 
 
 def get_tomorrow_str():
@@ -137,3 +142,7 @@ def standardize_time(time_var):
         avoid error when time has a time zone.
     """
     return time.strptime(datetime.datetime.strftime(time_var, '%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+
+
+if __name__ == '__main__':
+    print get_yesterday_str_by_date_str('2014-05-01')
