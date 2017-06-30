@@ -27,8 +27,8 @@ def run_bash_script(script,
     run bash script
     :param script: bash script string
     :param print_trace: whether print script and result
-    :param return_stdout: return stdout instead of printing
-    :param return_stderr: return stderr instead of printing
+    :param return_stdout: catch stdout as string and return instead of printing to sys.stdout
+    :param return_stderr: catch stderr as string and return instead of printing to sys.stderr
     :param combine_stderr: redirect stderr to stdout
     :type script: str
     :type print_trace: bool
@@ -55,14 +55,14 @@ def run_bash_script(script,
     p = subprocess.Popen("/bin/bash", stdout=target_stdout, stderr=target_stderr,
                          stdin=subprocess.PIPE)
     p.stdin.write(script)
-    p.stdin.close()
-    ret_value = p.wait()
     ret_stdout = None
     ret_stderr = None
+    tmp_stdout, tmp_stderr = p.communicate()
+    ret_value = p.returncode
     if return_stdout:
-        ret_stdout = bytes.decode(p.stdout.read())
+        ret_stdout = tmp_stdout
     if return_stderr and not combine_stderr:
-        ret_stderr = bytes.decode(p.stderr.read())
+        ret_stderr = tmp_stderr
     if print_trace:
         if ret_value == 0:
             print(Color.OKGREEN + str(ret_value) + Color.ENDC)
